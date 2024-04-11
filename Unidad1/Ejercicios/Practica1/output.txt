@@ -1,0 +1,5 @@
+### Salida de los comandos
+drwxr-xr-x 1 arsenal arsenal  370 mar 14 22:07 Scripts
+jue 14 mar 2024 23:26:06 CST
+total 8
+total 8

@@ -1,0 +1,3 @@
+/home/arsenal/Escritorio/Practica1/Scripts/Archivos.sh:3:# Ayala Fuentes Sunem Gizeht
+/home/arsenal/Escritorio/Practica1/Scripts/Problema_7.sh:1:# Ayala Fuentes Sunem Gizeht
+/home/arsenal/Escritorio/Practica1/Practica1.sh:7:echo "       - Ayala Fuentes Sunem Gizeht"
