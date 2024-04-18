@@ -11,15 +11,22 @@
 
 
 int main(){
-    char valor[]="", *path;
+    char valor[50], *path;
     int pid, estado;
     banner();
     help();
+
     while(1){
         printf("user@pc$ ");
-        scanf("%s", &valor);
+        fgets(valor, sizeof(valor), stdin);
+        valor[strcspn(valor, "\n")] = 0;
+
+        char *token = strtok(valor, " ");
+        char *param1 = token;
+        token = strtok(NULL, " ");
+        char *param2 = token;
         printf("\n");
-        if (strcmp(valor, "printPpid")==0){
+        if (strcmp(param1, "printPpid")==0){
             path = "/home/arsenal/Desktop/SO/Unidad2/Practica_2/subCodigos/printPpid";
             pid = fork();
             if(pid == 0){
@@ -36,7 +43,7 @@ int main(){
                 printf("\n");
             }
         }
-        else if (strcmp(valor, "printPid")==0){
+        else if (strcmp(param1, "printPid")==0){
             path = "/home/arsenal/Desktop/SO/Unidad2/Practica_2/subCodigos/printPid";
             pid = fork();
             if(pid == 0){
@@ -53,7 +60,7 @@ int main(){
                 printf("\n");
             }
         }
-        else if (strcmp(valor, "printGroup")==0){
+        else if (strcmp(param1, "printGroup")==0){
             path = "/home/arsenal/Desktop/SO/Unidad2/Practica_2/subCodigos/printGroup";
             pid = fork();
             if(pid == 0){
@@ -70,7 +77,7 @@ int main(){
                 printf("\n");
             }
         }
-        else if (strcmp(valor, "printSesion")==0){
+        else if (strcmp(param1, "printSesion")==0){
              path = "/home/arsenal/Desktop/SO/Unidad2/Practica_2/subCodigos/printSesion";
             pid = fork();
             if(pid == 0){
@@ -87,7 +94,7 @@ int main(){
                 printf("\n");
             }
         }
-        else if (strcmp(valor, "printUser")==0){
+        else if (strcmp(param1, "printUser")==0){
              path = "/home/arsenal/Desktop/SO/Unidad2/Practica_2/subCodigos/printUser";
             pid = fork();
             if(pid == 0){
@@ -104,11 +111,11 @@ int main(){
                 printf("\n");
             }
         }
-        else if (strcmp(valor, "PrintSerieFibonacci")==0){
-             path = "/home/arsenal/Desktop/SO/Unidad2/Practica_2/subCodigos/PrintSerieFibonacci";
+        else if (strcmp(param1, "PrintSerieFibonacci")==0){
+            path = "/home/arsenal/Desktop/SO/Unidad2/Practica_2/subCodigos/PrintSerieFibonacci";
             pid = fork();
             if(pid == 0){
-            estado = execl(path, "a", NULL);
+            estado = execl(path,param1, param2, NULL);
             if (estado==-1)
             {
                 perror ("Error 1 en la ejecucion");
@@ -121,7 +128,7 @@ int main(){
                 printf("\n");
             }
         }
-        else if (strcmp(valor, "help")==0){
+        else if (strcmp(param1, "help")==0){
             path = "/home/arsenal/Desktop/SO/Unidad2/Practica_2/subCodigos/help";
             pid = fork();
             if(pid == 0){
