@@ -1,129 +1,180 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include <sys/types.h>
 #include <sys/wait.h>
-// Elaboraron:
-//           -Ayala Fuentes Sunem Gizeht
-//           -Campos Zeron Salvador
-// Función para imprimir una serie numérica de dos en dos
-void proceso1(int n) {
-  int i;
-  for (i = 1; i <= n; i += 2) {
-    printf("[Proceso-1] %d\n", i);
-  }
+
+int fibonacci(int n) {
+    if (n <= 1)
+        return n;
+    else
+        return fibonacci(n-1) + fibonacci(n-2);
 }
 
-// Función para imprimir la serie Fibonacci
-void proceso2(int n) {
-  int a = 0, b = 1, c;
-  int i;
-  printf("[Proceso-2] 0\n");
-  printf("[Proceso-2] 1\n");
-  for (i = 3; i <= n; i++) {
-    c = a + b;
-    printf("[Proceso-2] %d\n", c);
-    a = b;
-    b = c;
-  }
+int factorial(int n) {
+    if (n == 0)
+        return 1;
+    else
+        return n * factorial(n-1);
 }
 
-// Función para imprimir una serie de números pares
-void proceso3(int n) {
-  int i;
-  for (i = 2; i <= n; i += 2) {
-    printf("[Proceso-3] %d\n", i);
-  }
+int sumaNaturales(int n) {
+    return n * (n + 1) / 2;
 }
 
-// Función para imprimir una serie de números impares
-void proceso4(int n) {
-  int i;
-  for (i = 1; i <= n; i += 2) {
-    printf("[Proceso-4] %d\n", i);
+int mcd(int a, int b) {
+    if (b == 0)
+        return a;
+    else
+        return mcd(b, a % b);
+}
+
+int sumaDigitos(int num) {
+    int suma = 0;
+    while (num != 0) {
+        suma += num % 10;
+        num /= 10;
+    }
+    return suma;
+}
+
+int invertirNumero(int num) {
+    int invertido = 0;
+    while (num != 0) {
+        invertido = invertido * 10 + num % 10;
+        num /= 10;
+    }
+    return invertido;
+}
+
+
+int esPrimo(int n) {
+    if (n <= 1)
+        return 0; // No es primo
+    for (int i = 2; i * i <= n; i++) {
+        if (n % i == 0)
+            return 0; // No es primo
+    }
+    return 1; // Es primo
+}
+
+void procesoHijo1(pid_t pidNieto1, pid_t pidNieto2, pid_t pidNieto3) {
+  printf("[Proceso-Hijo1] Iniciando proceso hijo 1\n");
+  
+  printf("- El factorial de 5 es: %d\n", factorial(5));
+  printf("\n");
+
+  // Crear y ejecutar a los nietos
+  pid_t pidNietoAux;
+  if ((pidNietoAux = fork()) == 0) {
+    procesoNieto1();
+    exit(0);
+  } else if (pidNietoAux == -1) {
+    perror("Error al crear proceso nieto 1");
+    exit(1);
   }
+  printf("\n");
+
+  if ((pidNietoAux = fork()) == 0) {
+    procesoNieto2();
+    exit(0);
+  } else if (pidNietoAux == -1) {
+    perror("Error al crear proceso nieto 2");
+    exit(1);
+  }
+  printf("\n");
+
+  if ((pidNietoAux = fork()) == 0) {
+    procesoNieto3();
+    exit(0);
+  } else if (pidNietoAux == -1) {
+    perror("Error al crear proceso nieto 3");
+    exit(1);
+  }
+
+  // Esperar a que los nietos terminen
+  waitpid(pidNieto1, NULL, 0);
+  waitpid(pidNieto2, NULL, 0);
+  waitpid(pidNieto3, NULL, 0);
+
+  printf("[Proceso-Hijo1] Finalizando proceso hijo 1\n");
+}
+
+void procesoHijo2(pid_t pidNieto4) {
+  printf("[Proceso-Hijo2] Iniciando proceso hijo 2\n");
+  printf("- Suma de los primero 30 naturales: %d\n", sumaNaturales(30));
+  printf("\n");
+
+  // Crear y ejecutar al nieto
+  pid_t pidNietoAux;
+  if ((pidNietoAux = fork()) == 0) {
+    procesoNieto4();
+    exit(0);
+  } else if (pidNietoAux == -1) {
+    perror("Error al crear proceso nieto 4");
+    exit(1);
+  }
+
+  // Esperar a que el nieto termine
+  waitpid(pidNieto4, NULL, 0);
+
+  printf("[Proceso-Hijo2] Finalizando proceso hijo 2\n");
+}
+
+void procesoNieto1() {
+  printf("[Proceso-Nieto1] Realizando tarea de nieto 1\n");
+  printf("- El mcd de 5 y 42 es: %d\n", mcd(5, 42));
+  printf("[Proceso-Nieto1] Finalizando tarea de nieto 1\n");
+}
+
+void procesoNieto2() {
+  printf("[Proceso-Nieto2] Realizando tarea de nieto 2\n");
+  printf("- La suma de los digitos del numero 325 es: %d\n", sumaDigitos(325));
+  printf("[Proceso-Nieto2] Finalizando tarea de nieto 2\n");
+}
+
+void procesoNieto3() {
+  printf("[Proceso-Nieto3] Realizando tarea de nieto 3\n");
+  printf("- El numero 12389 invertido es: %d\n", invertirNumero(12389));
+  printf("[Proceso-Nieto3] Finalizando tarea de nieto 3\n");
+}
+
+void procesoNieto4() {
+  printf("[Proceso-Nieto4] Realizando tarea de nieto 4\n");
+  int primo = esPrimo(586324);
+  if (primo == 0){
+  printf("- El numero 586324 es primo\n");
+  } else if (primo == 1){
+  printf("- El numero 586324 no es primo\n");
+  }
+  printf("[Proceso-Nieto4] Finalizando tarea de nieto 4\n");
 }
 
 int main() {
-  int pid1, pid2;
-  char nombre[100];
+ printf("[Proceso-Padre] Iniciando proceso padre\n");
+ printf("- Termino 15 de fibonacci: %d\n", fibonacci(15));
+  printf("\n");
+ pid_t pidHijo1, pidHijo2;
+  if ((pidHijo1 = fork()) == 0) {
+    procesoHijo1(0, 0, 0);
+    exit(0);
+  } else if (pidHijo1 == -1) {
+    perror("Error al crear proceso hijo 1");
+    exit(1);
+  }
+  waitpid(pidHijo1, NULL, 0);
+  printf("\n");
+  if ((pidHijo2 = fork()) == 0) {
+    procesoHijo2(0);
+    exit(0);
+  } else if (pidHijo2 == -1) {
+    perror("Error al crear proceso hijo 1");
+    exit(1);
+  }
+  waitpid(pidHijo2, NULL, 0);
 
-  // Leer el nombre completo del usuario
-  printf("Ingrese su nombre completo: ");
-  fgets(nombre, sizeof(nombre), stdin);
-  nombre[strcspn(nombre, "\n")] = 0; // Eliminar el carácter de nueva línea de fgets
+  printf("[Proceso-Padre] Finalizando proceso padre\n");
 
-  // Calcular la longitud del nombre completo
-  int longitud = strlen(nombre);
-
-  // Realizar la operación módulo 2
-  int modulo = longitud % 2;
-
-  // Implementar el modelo jerárquico de procesos
-  if (modulo == 0) {
-    // Crear el primer proceso
-    pid1 = fork();
-    if (pid1 < 0) {
-      perror("Error al crear el proceso 1");
-      exit(1);
-    }
-
-    // Si estamos en el proceso 1
-    if (pid1 == 0) {
-      proceso1(50);
-      exit(0);
-    }
-
-    // Crear el segundo proceso
-    pid2 = fork();
-    if (pid2 < 0) {
-      perror("Error al crear el proceso 2");
-      exit(1);
-    }
-
-    // Si estamos en el proceso 2
-    if (pid2 == 0) {
-      proceso2(10);
-      exit(0);
-    }
-
-    // Esperar a que los procesos terminen
-    wait(NULL);
-    wait(NULL);
-  } else {
-    // Modelo Jerárquico 2
-
-    // Crear el tercer proceso
-    pid1 = fork();
-    if (pid1 < 0) {
-      perror("Error al crear el proceso 3");
-      exit(1);
-    }
-
-    // Si estamos en el proceso 3
-    if (pid1 == 0) {
-      proceso3(50);
-      exit(0);
-    }
-
-    // Crear el cuarto proceso
-    pid2 = fork();
-    if (pid2 < 0) {
-      perror("Error al crear el proceso 4");
-      exit(1);
-    }
-
-    // Si estamos en el proceso 4
-    if (pid2 == 0) {
-      proceso4(50);
-      exit(0);
-    }
-
-    // Esperar a que los procesos terminen
-    wait(NULL);
-    wait(NULL);
   }
 
-  return 0;
-}
+  
 
