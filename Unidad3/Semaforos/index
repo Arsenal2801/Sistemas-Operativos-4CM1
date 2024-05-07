@@ -1,0 +1,32 @@
+Dijikstra define un semaforo como un objeto de tipo entero sobre el uqe se pueden realizar dos operaciones "P" y "V".
+
+La operacion "P" decrementa el valor del semaforo yse utiliza para adquirirlo o bloquearlo.
+La operacion "V" incrementa el valor y se utiliza para liberarlo.(La inversa de P)
+
+SEMGET
+
+librerias
+  #include<sys/types.h>
+  #include<sys/ipc.h>
+  #include<sys/sem.h>
+
+int semget (key_t key, int nsems, int smflg);
+                   |         |          |
+		   |         |          |-> Mascara de bits
+		   |         |-> Total de semaforos que van a estar agrupados bajo el mismo id
+		   |-> Llaveque indica el grupo de semaforos a los que queremos acceder(ftok)
+
+Struct sembuf{
+	Ushort sem_num; <- Numero del semaforo
+	Short sem_op; <- Operacion: P o V
+	Short sem_flg; <- Mascara de bits
+}
+
+Struct sembuf operaciones[4];
+
+operaciones[0].sem_num= 1; // sem numero 1
+operaciones[0].sem_op =-1; // operacion P
+operaciones[0].sem_flg= 0;
+
+
+Tarea: Generar un programa que crea 10 procesos
